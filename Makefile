@@ -33,12 +33,12 @@ fmt:              ## Format code using black & isort.
 .PHONY: lint
 lint:             ## Run pep8, black, mypy linters.
 	$(ENV_PREFIX)flake8 beer_game/
-	$(ENV_PREFIX)black -l 79 --check beer_game/
-	$(ENV_PREFIX)black -l 79 --check tests/
+	$(ENV_PREFIX)black -l 79 beer_game/
+	$(ENV_PREFIX)black -l 79 tests/
 	$(ENV_PREFIX)mypy --ignore-missing-imports beer_game/
 
 .PHONY: test
-test: lint        ## Run tests and generate coverage report.
+test: lint        ## Run tests and generate coverage report. 
 	$(ENV_PREFIX)pytest -v --cov-config .coveragerc --cov=beer_game -l --tb=short --maxfail=1 tests/
 	$(ENV_PREFIX)coverage xml
 	$(ENV_PREFIX)coverage html
