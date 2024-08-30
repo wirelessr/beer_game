@@ -38,12 +38,17 @@ jobs:
       matrix:
         python-version: [3.9]
         os: [ubuntu-latest]
+        mongodb-version: ['7.0']
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
+      - name: Start MongoDB
+        uses: supercharge/mongodb-github-action@1.11.0
+        with:
+          mongodb-version: ${{ matrix.mongodb-version }}
       - name: Install project
         run: make install
       - name: Run tests
@@ -60,12 +65,17 @@ jobs:
       matrix:
         python-version: [3.9]
         os: [macos-latest]
+        mongodb-version: ['7.0']
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
+      - name: Start MongoDB
+        uses: supercharge/mongodb-github-action@1.11.0
+        with:
+          mongodb-version: ${{ matrix.mongodb-version }}
       - name: Install project
         run: make install
       - name: Run tests
@@ -78,12 +88,17 @@ jobs:
       matrix:
         python-version: [3.9]
         os: [windows-latest]
+        mongodb-version: ['7.0']
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
+      - name: Start MongoDB
+        uses: supercharge/mongodb-github-action@1.11.0
+        with:
+          mongodb-version: ${{ matrix.mongodb-version }}
       - name: Install Pip
         run: pip install --user --upgrade pip
       - name: Install project

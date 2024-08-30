@@ -12,21 +12,16 @@ class PlayerRepo:
     def reloadStat(self):
         # 當週的初始狀態
         week = self.db.getDashboard(self.game)["week"]
-        inventory_this_week = self.db.getInventory(
-            self.identifier, week
-        )  # 來自上週庫存結果 (狀態表)
         order_this_week = self.db.getOrder(
             self.identifier, week
         )  # 來自上週上一個角色的訂單 (訂單表)
         delivery_this_week = self.db.getDelivery(
             self.identifier, week
         )  # 來自四週前下單 (訂單表)
-        cost_this_week = self.db.getCost(
-            self.identifier, week
-        )  # 來自自己上週結果 (狀態表)
-        out_of_stock_this_week = self.db.getOutOfStock(
-            self.identifier, week
-        )  # 來自自己上週結果 (狀態表)
+        stat_this_week = self.db.getStat(self.identifier, week)
+        inventory_this_week = stat_this_week["inventory"] # 來自上週庫存結果 (狀態表)
+        cost_this_week = stat_this_week["cost"]  # 來自自己上週結果 (狀態表)
+        out_of_stock_this_week = stat_this_week["out_of_stock"]  # 來自自己上週結果 (狀態表)
 
         # 當下的庫存是上週庫存 + 這週到貨 - 這週售出
         # 若是上週庫存 + 這週到貨不足以售出
