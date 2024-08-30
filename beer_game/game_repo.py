@@ -1,4 +1,4 @@
-from beer_game.player_repo import ROLES, PlayerRepo
+from beer_game.player_repo import PlayerRepo
 
 
 class GameRepo:
@@ -34,5 +34,3 @@ class GameRepo:
                 ret[p][role] = player.reloadStat()
 
         return ret
-
-

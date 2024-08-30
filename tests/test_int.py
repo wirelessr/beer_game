@@ -69,11 +69,11 @@ class IntegrationTestCase(unittest.TestCase):
         self.game.nextWeek()
         self.retailer.reloadStat()
         self.shop.reloadStat()
-        
+
         self.game.nextWeek()
         self.retailer.reloadStat()
         self.shop.reloadStat()
-        
+
         self.game.nextWeek()
         self.retailer.reloadStat()
         self.shop.reloadStat()
@@ -164,15 +164,14 @@ class IntegrationTestCase(unittest.TestCase):
 
         self.game.nextWeek()
         self.factory.reloadStat()
-        
+
         self.game.nextWeek()
         self.factory.reloadStat()
-        
+
         self.game.nextWeek()
         self.factory.reloadStat()
-        
+
         self.game.nextWeek()
         factory_w4 = self.factory.reloadStat()
         self.assertEqual(factory_w4["week"], 4)
         self.assertEqual(factory_w4["inventory"], 4 + 1)
-

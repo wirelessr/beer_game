@@ -19,9 +19,11 @@ class PlayerRepo:
             self.identifier, week
         )  # 來自四週前下單 (訂單表)
         stat_this_week = self.db.getStat(self.identifier, week)
-        inventory_this_week = stat_this_week["inventory"] # 來自上週庫存結果 (狀態表)
+        # 來自上週庫存結果 (狀態表)
+        inventory_this_week = stat_this_week["inventory"]
         cost_this_week = stat_this_week["cost"]  # 來自自己上週結果 (狀態表)
-        out_of_stock_this_week = stat_this_week["out_of_stock"]  # 來自自己上週結果 (狀態表)
+        # 來自自己上週結果 (狀態表)
+        out_of_stock_this_week = stat_this_week["out_of_stock"]
 
         # 當下的庫存是上週庫存 + 這週到貨 - 這週售出
         # 若是上週庫存 + 這週到貨不足以售出
@@ -84,8 +86,10 @@ class PlayerRepo:
         if order <= 0:
             return
 
-        if self.role == 'factory':
-            self.db.saveDelivery(order, week + 4, self.game, self.player, 'factory')
+        if self.role == "factory":
+            self.db.saveDelivery(
+                order, week + 4, self.game, self.player, "factory"
+            )
         else:
             next_role = ROLES[ROLES.index(self.role) + 1]
             self.db.saveOrder(order, week, self.game, self.player, next_role)
