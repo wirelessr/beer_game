@@ -26,22 +26,22 @@ class GameTestCase(unittest.TestCase):
             self.db.data[self.game_name]["week"], 1, "week not incremented"
         )
 
-        self.game.nextWeek(3)
+        self.game.nextWeek()
         self.assertEqual(
-            self.db.data[self.game_name]["week"], 4, "week not incremented"
+            self.db.data[self.game_name]["week"], 2, "week not incremented"
         )
 
     def test_register(self):
         self.game.newGame()
         self.game.register("player1", "shop")
 
-        r = self.db.getPlayers(self.game_name)
+        r = self.game.retrievePlayer()
         self.assertIn("player1", r, "player not registered")
         self.assertTrue(r["player1"]["shop"], "wrong player type")
 
         self.game.register("player2", "factory")
 
-        r = self.db.getPlayers(self.game_name)
+        r = self.game.retrievePlayer()
         self.assertIn("player2", r, "player not registered")
         self.assertTrue(r["player2"]["factory"], "wrong player type")
 

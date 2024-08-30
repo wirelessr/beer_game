@@ -9,7 +9,7 @@ class PlayerRepo:
         self.role = role
         self.identifier = (game, player, role)
 
-    def retrieveStat(self):
+    def reloadStat(self):
         # 當週的初始狀態
         week = self.db.getDashboard(self.game)["week"]
         inventory_this_week = self.db.getInventory(
@@ -89,10 +89,8 @@ class PlayerRepo:
         if order <= 0:
             return
 
-        next_role = (
-            "factory"
-            if self.role == "factory"
-            else ROLES[ROLES.index(self.role) + 1]
-        )
-
-        self.db.saveOrder(order, week, self.game, self.player, next_role)
+        if self.role == 'factory':
+            self.db.saveDelivery(order, week + 4, self.game, self.player, 'factory')
+        else:
+            next_role = ROLES[ROLES.index(self.role) + 1]
+            self.db.saveOrder(order, week, self.game, self.player, next_role)

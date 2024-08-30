@@ -1,4 +1,4 @@
-from beer_game.player_repo import PlayerRepo
+from beer_game.player_repo import ROLES, PlayerRepo
 
 
 class GameRepo:
@@ -17,8 +17,22 @@ class GameRepo:
             player = PlayerRepo(self.game, p, "customer", self.db)
             player.purchase(order)
 
-    def nextWeek(self, delta=1):
-        self.db.incrWeek(self.game, delta)
+    def nextWeek(self):
+        self.db.incrWeek(self.game)
 
     def retrievePlayer(self):
         return self.db.getPlayers(self.game)
+
+    def reloadPlayerStat(self):
+        ret = {}
+
+        players = self.retrievePlayer()
+        for p, roles in players.items():
+            ret[p] = {}
+            for role in roles:
+                player = PlayerRepo(self.game, p, role, self.db)
+                ret[p][role] = player.reloadStat()
+
+        return ret
+
+
