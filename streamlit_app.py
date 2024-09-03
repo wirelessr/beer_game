@@ -25,14 +25,6 @@ client = init_connection()
 if "db" not in st.session_state:
     st.session_state.db = MongoDB(client)
 
-text = 'world'
-PLAYERS = Template('''# Player
-- $player
-    - Shop: $shop
-    - Retailer: $retailer
-    - Factory: $factory
-''')
-
 if "check_state" not in st.session_state:
     st.session_state.check_state = lambda k: k in st.session_state \
         and st.session_state[k]
@@ -79,13 +71,48 @@ with st.sidebar:
 
 if st.session_state.check_state("game"):
     gameRepo = st.session_state.game
-    players = gameRepo.retrievePlayer()
-    st.text(f"{len(players)} players")
+    week = gameRepo.getDashboard()["week"]
 
-    for p, roles in players.items():
-        st.markdown(PLAYERS.substitute(
-            player=p,
-            shop='✅' if roles["shop"] else '❎',
-            retailer='✅' if roles["retailer"] else '❎',
-            factory='✅' if roles["factory"] else '❎',
-        ))
+    st.title(f"Week {week}")
+
+    left, mid1, mid2, right = st.columns(4)
+    left.button("Refresh")
+    order = mid1.number_input(
+        "Order",
+        value=None,
+        step=1,
+        label_visibility="collapsed",
+        placeholder="Order"
+    )
+    ordered = mid2.button("Place Order", disabled=(not order))
+    if ordered:
+        st.session_state.game.dispatch(order)
+    if right.button("Next Week"):
+        st.session_state.game.nextWeek()
+
+    players = gameRepo.reloadPlayerStat()
+    n_players = len(players)
+    st.text(f"{n_players} players")
+
+    cols = st.columns(n_players) if n_players > 0 else []
+    players = [(p, roles) for p, roles in players.items()]
+
+    st.write(players)
+    for idx, col in enumerate(cols):
+        with col:
+            p, roles = players[idx]
+
+            PLAYERS = Template('''- $player
+    - Shop: $shop
+    - Retailer: $retailer
+    - Factory: $factory
+    - Cost: $total_cost
+''')
+
+            st.markdown(PLAYERS.substitute(
+                player=p,
+                shop='✅' if roles["shop"]["enabled"] else '❎',
+                retailer='✅' if roles["retailer"]["enabled"] else '❎',
+                factory='✅' if roles["factory"]["enabled"] else '❎',
+                total_cost=sum([roles[r]["cost"] for r in roles])
+            ))

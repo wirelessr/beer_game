@@ -10,8 +10,11 @@ class GameRepo:
     def newGame(self):
         self.db.createGame(self.game)
 
+    def getDashboard(self):
+        return self.db.getDashboard(self.game)
+
     def dispatch(self, order):
-        for p in self.db.getDashboard(self.game)["players"]:
+        for p in self.getDashboard()["players"]:
             player = PlayerRepo(self.game, p, "customer", self.db)
             player.purchase(order)
 
@@ -35,6 +38,6 @@ class GameRepo:
             ret[p] = {}
             for role in roles:
                 player = PlayerRepo(self.game, p, role, self.db)
-                ret[p][role] = player.reloadStat()
+                ret[p][role] = player.reloadStat() | {'enabled': roles[role]}
 
         return ret
