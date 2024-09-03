@@ -75,6 +75,18 @@ if st.session_state.check_state("game"):
 
     st.title(f"Week {week}")
 
+    st.markdown('''Game Flow
+1. Refresh
+2. Adjust order number
+3. Place Order
+4. Wait shop player
+5. Wait retailer player
+6. Wait factory player
+7. Next Week
+
+⬇️ Start here
+''')
+
     left, mid1, mid2, right = st.columns(4)
     left.button("Refresh")
     order = mid1.number_input(

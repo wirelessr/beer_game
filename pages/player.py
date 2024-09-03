@@ -5,6 +5,14 @@ from beer_game.player_repo import PlayerRepo
 
 st.set_page_config(page_title="Beer Player", page_icon="📈")
 
+st.markdown('''Game Flow
+1. Refresh
+2. Adjust order number
+3. Place Order
+
+⬇️ Start here
+''')
+
 with st.sidebar:
     if not st.session_state.check_state("role"):
         st.session_state.role = st.selectbox(
@@ -53,16 +61,24 @@ def display_stat(stat):
     return STAT.substitute(stat | {'role': st.session_state.role.capitalize()})
 
 
-def tell_story(stat):
-    STORY = Template(
-        '''你本週到貨 $delivery 加上原有庫存 $inventory_this_week 共可賣 $can_sell
+def tell_story(stat, lang='zh'):
+    STORY_I18N = {
+        'zh': '''你本週到貨 $delivery 加上原有庫存 $inventory_this_week 共可賣 $can_sell
 
 本週進單 $order 加上積壓貨單 $out_of_stock_this_week 共需賣 $should_sell
 
 因此，賣出 $sell 並使庫存為 $inventory
 
-最終，總成本是 $cost
-''')
+最終，總成本是 $cost''',
+        'en': '''You have $delivery new arrivals this week plus $inventory_this_week original inventory, totaling $can_sell available for sale
+
+This week's orders $order plus backlogged orders $out_of_stock_this_week sum up to $should_sell that need to be sold
+
+Therefore, you sell $sell and your inventory becomes $inventory
+
+Finally, the total cost is $cost'''
+    }
+    STORY = Template(STORY_I18N.get(lang) or STORY_I18N['zh'])
     return STORY.substitute(stat)
 
 if st.session_state.check_state("player"):
