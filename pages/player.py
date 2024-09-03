@@ -1,33 +1,49 @@
 import streamlit as st
-import time
-import numpy as np
 
-st.set_page_config(page_title="Plotting Demo", page_icon="📈")
+from beer_game.player_repo import PlayerRepo
 
-st.markdown("# Plotting Demo")
-st.sidebar.header("Plotting Demo")
-st.write(
-    """This demo illustrates a combination of plotting and animation with
-Streamlit. We're generating a bunch of random numbers in a loop for around
-5 seconds. Enjoy!"""
-)
+st.set_page_config(page_title="Beer Player", page_icon="📈")
 
-progress_bar = st.sidebar.progress(0)
-status_text = st.sidebar.empty()
-last_rows = np.random.randn(1, 1)
-chart = st.line_chart(last_rows)
+with st.sidebar:
+    if not st.session_state.check_state("role"):
+        st.session_state.role = st.selectbox(
+            "player_role",
+            ("shop", "retailer", "factory"),
+            index=None
+        )
+    else:
+        st.selectbox(
+            "Game Role",
+            [],
+            index=None,
+            placeholder=st.session_state.role,
+            disabled=True
+        )
 
-for i in range(1, 101):
-    new_rows = last_rows[-1, :] + np.random.randn(5, 1).cumsum(axis=0)
-    status_text.text("%i%% Complete" % i)
-    chart.add_rows(new_rows)
-    progress_bar.progress(i)
-    last_rows = new_rows
-    time.sleep(0.05)
+    st.session_state.text_input("player_key", True)
 
-progress_bar.empty()
+    enabled = (
+        st.session_state.player_key == st.secrets["player"]["key"]
+    )
 
-# Streamlit widgets automatically run the script from top to bottom. Since
-# this button is not connected to any other logic, it just causes a plain
-# rerun.
-st.button("Re-run")
+    st.session_state.text_input("player_game")
+    st.session_state.text_input("player_id")
+
+    role = st.session_state.role
+    game = st.session_state.player_game
+    player = st.session_state.player_id
+
+    if st.button("Join Game", disabled=(not player or not game or not role)):
+        st.write(f"{game} joined")
+        if "player" not in st.session_state:
+            st.session_state.player = PlayerRepo(
+                game,
+                player,
+                role,
+                st.session_state.db
+            )
+            st.session_state.player.register()
+
+if st.session_state.check_state("player"):
+    stat = st.session_state.player.reloadStat()
+    st.code(stat, language="json")
