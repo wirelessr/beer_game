@@ -24,14 +24,6 @@ if "selectbox" not in st.session_state:
 
     st.session_state.selectbox = selectbox
 
-st.markdown('''Game Flow
-1. Refresh
-2. Adjust order number
-3. Place Order
-
-⬇️ Start here
-''')
-
 
 
 with st.sidebar:
@@ -98,6 +90,14 @@ Finally, the total cost is $cost'''
     return STORY.substitute(stat)
 
 if st.session_state.check_state("player"):
+    st.markdown('''Game Flow
+1. Refresh
+2. Adjust order number
+3. Place Order
+
+⬇️ Start here
+''')
+
     left, mid1, mid2, _ = st.columns(4)
 
     left.button("Refresh")
