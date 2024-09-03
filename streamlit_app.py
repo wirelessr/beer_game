@@ -20,11 +20,6 @@ def init_connection():
         server_api=ServerApi('1')
         )
 
-client = init_connection()
-
-if "db" not in st.session_state:
-    st.session_state.db = MongoDB(client)
-
 if "check_state" not in st.session_state:
     st.session_state.check_state = lambda k: k in st.session_state \
         and st.session_state[k]
@@ -62,7 +57,9 @@ with st.sidebar:
     if st.button("New Game", disabled=(not enabled or not game)):
         st.write(f"{game} started")
         if "game" not in st.session_state:
-            st.session_state.game = GameRepo(game, st.session_state.db)
+            client = init_connection()
+            db = MongoDB(client)
+            st.session_state.game = GameRepo(game, db)
             st.session_state.game.newGame()
 
     if st.button("End Game", disabled=("game" not in st.session_state)):

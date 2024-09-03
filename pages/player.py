@@ -1,6 +1,7 @@
 from string import Template
 import streamlit as st
 
+from beer_game.mongodb_adapter import MongoDB
 from beer_game.player_repo import PlayerRepo
 
 st.set_page_config(page_title="Beer Player", page_icon="📈")
@@ -41,13 +42,17 @@ with st.sidebar:
     game = st.session_state.player_game
     player = st.session_state.player_id
 
-    if st.button("Join Game", disabled=(not player or not game or not role)):
+    if st.button("Join Game", disabled=(not enabled or not player \
+                                         or not game or not role)):
+        from streamlit_app import init_connection
         st.write(f"{game} joined")
+        client = init_connection()
+        db = MongoDB(client)
         st.session_state.player = PlayerRepo(
             game,
             player,
             role,
-            st.session_state.db
+            db
         )
         st.session_state.player.register()
 
@@ -86,7 +91,7 @@ Therefore, you sell $sell and your inventory becomes $inventory
 
 Finally, the total cost is $cost'''
     }
-    STORY = Template(STORY_I18N[lang])
+    STORY = Template(STORY_I18N.get(lang) or STORY_I18N['zh'])
     return STORY.substitute(stat)
 
 if st.session_state.check_state("player"):
