@@ -9,6 +9,9 @@ class PlayerRepo:
         self.role = role
         self.identifier = (game, player, role)
 
+    def register(self):
+        self.db.addPlayer(self.game, self.player, self.role)
+
     def reloadStat(self):
         # 當週的初始狀態
         week = self.db.getDashboard(self.game)["week"]

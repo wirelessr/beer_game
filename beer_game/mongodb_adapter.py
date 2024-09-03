@@ -12,6 +12,9 @@ class MongoDB:
     def _fam(coll, pk, value):
         return coll.find_one_and_update(pk, {"$set": value}, upsert=True)
 
+    def getDashboard(self, game):
+        return self.game.find_one({"name": game})
+
     # PlayerRepo
     def saveStat(self, identifier, week, inventory, cost, out_of_stock):
         game, player, role = identifier
