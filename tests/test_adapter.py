@@ -22,6 +22,9 @@ class AdapterTestCase(unittest.TestCase):
         players = self.adapter.getPlayers("game1")
         self.assertEqual(len(players), 0)
 
+        dashboard = self.adapter.getDashBoard("game1")
+        self.assertEqual(dashboard["week"], 0)
+
     def test_add_player(self):
         self.adapter.createGame("game1")
 

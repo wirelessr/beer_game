@@ -12,9 +12,28 @@ class IntegrationTestCase(unittest.TestCase):
         self.shop = PlayerRepo("Game 1", "Player 1", "shop", self.db)
         self.retailer = PlayerRepo("Game 1", "Player 1", "retailer", self.db)
         self.factory = PlayerRepo("Game 1", "Player 1", "factory", self.db)
-        self.game.register("Player 1", "shop")
-        self.game.register("Player 1", "retailer")
-        self.game.register("Player 1", "factory")
+        self.shop.register()
+        self.retailer.register()
+        self.factory.register()
+
+    def test_register(self):
+        self.game.newGame()
+        self.shop.register()
+
+        r = self.game.retrievePlayer()
+        self.assertIn("Player 1", r, "player not registered")
+        self.assertTrue(r["Player 1"]["shop"], "wrong player type")
+        self.assertFalse(r["Player 1"]["retailer"], "wrong player type")
+
+        factory2 = PlayerRepo("Game 1", "Player 2", "factory", self.db)
+        factory2.register()
+
+        r = self.game.retrievePlayer()
+        self.assertIn("Player 2", r, "player not registered")
+        self.assertFalse(r["Player 2"]["shop"], "wrong player type")
+        self.assertTrue(r["Player 2"]["factory"], "wrong player type")
+
+        self.assertEqual(len(r), 2, "wrong number of players")
 
     def test_game_start(self):
         w0 = self.shop.reloadStat()

@@ -13,6 +13,12 @@ def STAT_TEMPLATE():
         "out_of_stock": 0,
     }  # 預先派發4個庫存
 
+def PLAYER_TEMPLATE():
+    return {
+        "shop": False,
+        "retailer": False,
+        "factory": False,
+    }
 
 class DictDB:
     def __init__(self):
