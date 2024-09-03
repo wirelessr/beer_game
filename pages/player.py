@@ -69,10 +69,15 @@ def display_stat(stat):
 |------|-------| ----- | ----- |
 |$order | $inventory | $out_of_stock | $cost |
 ''')
-    return STAT.substitute(stat | {'role': st.session_state.role.capitalize()})
+    return STAT.substitute(stat | {
+        'role': st.session_state.player_role.capitalize()
+        })
 
 
 def tell_story(stat, lang='zh'):
+    if "lang" in st.session_state:
+        lang = st.session_state.lang
+
     STORY_I18N = {
         'zh': '''你本週到貨 $delivery 加上原有庫存 $inventory_this_week 共可賣 $can_sell
 
@@ -89,7 +94,7 @@ Therefore, you sell $sell and your inventory becomes $inventory
 
 Finally, the total cost is $cost'''
     }
-    STORY = Template(STORY_I18N.get(lang) or STORY_I18N['zh'])
+    STORY = Template(STORY_I18N[lang])
     return STORY.substitute(stat)
 
 if st.session_state.check_state("player"):
