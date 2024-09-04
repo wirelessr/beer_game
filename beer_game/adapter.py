@@ -1,3 +1,6 @@
+from beer_game.config import CONFIG
+
+
 def GAME_TEMPLATE():
     return {"week": 0, "players": {}}
 
@@ -8,10 +11,11 @@ def ORDER_TEMPLATE():
 
 def STAT_TEMPLATE():
     return {
-        "inventory": 4,
+        "inventory": CONFIG.init_inventory,
         "cost": 0,
         "out_of_stock": 0,
     }  # 預先派發4個庫存
+
 
 def PLAYER_TEMPLATE():
     return {
@@ -19,6 +23,7 @@ def PLAYER_TEMPLATE():
         "retailer": False,
         "factory": False,
     }
+
 
 class DictDB:
     def __init__(self):

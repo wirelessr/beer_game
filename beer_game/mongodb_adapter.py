@@ -3,6 +3,7 @@ from beer_game.adapter import GAME_TEMPLATE, STAT_TEMPLATE
 import time
 from functools import wraps
 
+
 def retry(retries=3, delay=1, exception_to_check=Exception):
     def decorator_retry(func):
         @wraps(func)
@@ -16,8 +17,11 @@ def retry(retries=3, delay=1, exception_to_check=Exception):
                     print(f"Attempt {attempt + 1}/{retries} failed: {e}")
                     time.sleep(delay)
             raise last_exception
+
         return wrapper
+
     return decorator_retry
+
 
 class MongoDB:
     def __init__(self, client):

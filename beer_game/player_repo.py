@@ -1,3 +1,6 @@
+from beer_game.config import CONFIG
+
+
 ROLES = ["customer", "shop", "retailer", "factory"]
 
 
@@ -35,12 +38,16 @@ class PlayerRepo:
         can_sell = inventory_this_week + delivery_this_week  # 當週可賣
         should_sell = order_this_week + out_of_stock_this_week  # 當週應賣
         sell = should_sell if can_sell >= should_sell else can_sell  # 當週賣出
-        self._fulfill(sell, week + 4)  # 四週到貨
+        self._fulfill(sell, week + CONFIG.delivery_weeks)  # 四週到貨
 
         inventory = can_sell - sell
         out_of_stock = should_sell - sell
 
-        cost = cost_this_week + out_of_stock * 2 + inventory
+        cost = (
+            cost_this_week
+            + out_of_stock * CONFIG.out_of_stock_penalty
+            + inventory * CONFIG.inventory_penalty
+        )
 
         # 顯示週數、庫存、成本、這週到貨、這週訂單、總欠貨
         stat = {
@@ -91,7 +98,11 @@ class PlayerRepo:
 
         if self.role == "factory":
             self.db.saveDelivery(
-                order, week + 4, self.game, self.player, "factory"
+                order,
+                week + CONFIG.delivery_weeks,
+                self.game,
+                self.player,
+                "factory",
             )
         else:
             next_role = ROLES[ROLES.index(self.role) + 1]

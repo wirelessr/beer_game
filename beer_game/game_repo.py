@@ -38,6 +38,6 @@ class GameRepo:
             ret[p] = {}
             for role in roles:
                 player = PlayerRepo(self.game, p, role, self.db)
-                ret[p][role] = player.reloadStat() | {'enabled': roles[role]}
+                ret[p][role] = player.reloadStat() | {"enabled": roles[role]}
 
         return ret
