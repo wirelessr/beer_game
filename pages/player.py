@@ -1,10 +1,19 @@
 from string import Template
+import pymongo
+from pymongo.server_api import ServerApi
 import streamlit as st
 
 from beer_game.mongodb_adapter import MongoDB
 from beer_game.player_repo import PlayerRepo
 
 st.set_page_config(page_title="Beer Player", page_icon="📈")
+
+@st.cache_resource
+def init_connection():
+    return pymongo.MongoClient(
+        st.secrets["mongo"]["uri"],
+        server_api=ServerApi('1')
+        )
 
 if "selectbox" not in st.session_state:
     def selectbox(k, ops):
@@ -44,7 +53,6 @@ with st.sidebar:
 
     if st.button("Join Game", disabled=(not enabled or not player \
                                          or not game or not role)):
-        from streamlit_app import init_connection
         st.write(f"{game} joined")
         client = init_connection()
         db = MongoDB(client)
