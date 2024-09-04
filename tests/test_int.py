@@ -194,3 +194,9 @@ class IntegrationTestCase(unittest.TestCase):
         factory_w4 = self.factory.reloadStat()
         self.assertEqual(factory_w4["week"], 4)
         self.assertEqual(factory_w4["inventory"], 4 + 1)
+
+    def test_gm_reload_player(self):
+        self.shop.purchase(1)
+
+        r = self.game.reloadPlayerStat()
+        self.assertEqual(r["Player 1"]["retailer"]["inventory"], 3)
