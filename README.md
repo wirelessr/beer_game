@@ -3,6 +3,14 @@
 [![codecov](https://codecov.io/gh/wirelessr/beer_game/branch/main/graph/badge.svg?token=beer_game_token_here)](https://codecov.io/gh/wirelessr/beer_game)
 [![CI](https://github.com/wirelessr/beer_game/actions/workflows/main.yml/badge.svg)](https://github.com/wirelessr/beer_game/actions/workflows/main.yml)
 
+## Features
+
+- Multiple supply chains can race together.
+- Host view can see all progressing status.
+- Player view has a countdown timer.
+- Idempotent operation for purchasing and refilling.
+- MongoDB integration.
+
 ![Host UI](docs/host_ui.png)
 _Host UI_
 
