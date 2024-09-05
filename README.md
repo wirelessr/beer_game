@@ -4,16 +4,10 @@
 [![CI](https://github.com/wirelessr/beer_game/actions/workflows/main.yml/badge.svg)](https://github.com/wirelessr/beer_game/actions/workflows/main.yml)
 
 ![Host UI](docs/host_ui.png)
-*Host UI*
-  
-  
-  
-  
+_Host UI_
+
 ![Player UI](docs/player_ui.png)
-*Player UI*
-
-
-
+_Player UI_
 
 The entire project is business driven developed and tested with over 90% coverage, so please feel free to use it.
 
@@ -66,15 +60,9 @@ All players on the same supply chain need to use the same `player_id`, so this i
 You can see the status on the host's screen when a participant joins.
 ![image](docs/join_stat.png)
 
-
-
-
 Let's look at what a full iteration would look like from the host's point of view.
 
 ![image](docs/host_flow.png)
-
-
-
 
 All the components that need to be manipulated are in this picture, and each turn starts by pressing the `Refresh` button and ends by pressing `Next Week`.
 
@@ -86,18 +74,15 @@ Once the host has placed the order, the shop player can take the order.
 
 ![image](docs/player_flow.png)
 
-
-
-
 Similarly, each role in the supply chain starts with `Refresh` and ends with `Place Order`, with the shop player taking the action followed by the retailer player, and so on.
 
 Finally, back to the host, who can press `Refresh` again to see all the statuses for the round, and `Next Week` to end the round.
 
 ## Game Detail
 
-There are a couple of things actually done during `Refresh`. 
+There are a couple of things actually done during `Refresh`.
 
-1. it refills inventory from downstream based on orders placed four weeks ago. 
+1. it refills inventory from downstream based on orders placed four weeks ago.
 2. it receives orders from upstream.
 3. decides how much to sell based on what inventory it can sell.
 
@@ -107,9 +92,7 @@ Since `Place Order` is idempotent, `Refresh` itself is idempotent too.
 
 It basically meets all of my needs now, but there are some enhancements that could be made.
 
-For example, the current game flow relies heavily on the host's control, so if a timer could be added to each round, it would make the whole process go much smoother.
-
-Secondly, although the host can see the status of all the participants, it would be helpful to have a graph to show the change of inventory and cost information over time, which would be useful for reviewing the game after it is over.
+For example, although the host can see the status of all the participants, it would be helpful to have a graph to show the change of inventory and cost information over time, which would be useful for reviewing the game after it is over.
 
 There's also a more basic problem: the current UI has no test coverage at all, mainly because the current game flow is quite simple. Just a few clicks on the UI will cover all the UI flow, so I don't rely so much on auto-testing. However, if there is a UI modification, it will still be a bit tedious, so it would be better to have a UI unit test.
 

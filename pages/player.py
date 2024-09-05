@@ -8,6 +8,24 @@ from beer_game.player_repo import PlayerRepo
 
 st.set_page_config(page_title="Beer Player", page_icon="📈")
 
+
+@st.fragment(run_every="1s")
+def place_order_timer():
+    if st.session_state.timer > 0:
+        st.toast(f"{st.session_state.timer}", icon="⚠️")
+
+        st.session_state.timer -= 1
+        st.session_state.locked = False
+    else:
+        st.session_state.locked = True
+
+    if st.button("Place Order", disabled=(
+            not order or st.session_state.locked
+        )):
+        st.session_state.player.purchase(order)
+        st.write(f"{order} order placed")
+        st.session_state.timer = 0
+
 @st.cache_resource
 def init_connection():
     return pymongo.MongoClient(
@@ -110,21 +128,23 @@ if st.session_state.check_state("player"):
 
 ⬇️ Start here
 ''')
+    stat = st.session_state.player.reloadStat()
 
-    left, mid1, mid2, _ = st.columns(4)
+    if st.button("Refresh"):
+        if "curr_week" not in st.session_state or st.session_state.curr_week != stat['week']:
+            st.session_state.timer = 30
+            st.session_state.curr_week = stat['week']
 
-    left.button("Refresh")
-    order = mid1.number_input(
+
+    order = st.number_input(
         "Order",
         value=None,
         step=1,
         label_visibility="collapsed",
         placeholder="Order"
     )
-    if mid2.button("Place Order", disabled=(not order)):
-        st.session_state.player.purchase(order)
-        st.write(f"{order} order placed")
 
-    stat = st.session_state.player.reloadStat()
+    place_order_timer()
+
     st.markdown(display_stat(stat))
     st.write(tell_story(stat))
