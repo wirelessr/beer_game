@@ -13,6 +13,8 @@ class PlayerRepo:
         self.identifier = (game, player, role)
 
     def register(self):
+        if self.role not in ROLES:
+            raise ValueError("Invalid role")
         self.db.addPlayer(self.game, self.player, self.role)
 
     def reloadStat(self):
