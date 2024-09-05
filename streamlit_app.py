@@ -103,10 +103,10 @@ if st.session_state.check_state("game"):
     n_players = len(players)
     st.text(f"{n_players} players")
 
-    cols = st.columns(n_players) if n_players > 0 else []
+    cols = st.tabs(list(players.keys()) or ["No Player"])
+
     players = [(p, roles) for p, roles in players.items()]
 
-    st.write(players)
     for idx, col in enumerate(cols):
         with col:
             p, roles = players[idx]
@@ -125,3 +125,5 @@ if st.session_state.check_state("game"):
                 factory='✅' if roles["factory"]["enabled"] else '❎',
                 total_cost=sum([roles[r]["cost"] for r in roles])
             ))
+
+            st.write(roles)
