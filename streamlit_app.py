@@ -104,26 +104,26 @@ if st.session_state.check_state("game"):
     st.text(f"{n_players} players")
 
     cols = st.tabs(list(players.keys()) or ["No Player"])
+    if n_players:
+        players = [(p, roles) for p, roles in players.items()]
 
-    players = [(p, roles) for p, roles in players.items()]
+        for idx, col in enumerate(cols):
+            with col:
+                p, roles = players[idx]
 
-    for idx, col in enumerate(cols):
-        with col:
-            p, roles = players[idx]
-
-            PLAYERS = Template('''- $player
+                PLAYERS = Template('''- $player
     - Shop: $shop
     - Retailer: $retailer
     - Factory: $factory
     - Cost: $total_cost
 ''')
 
-            st.markdown(PLAYERS.substitute(
-                player=p,
-                shop='✅' if roles["shop"]["enabled"] else '❎',
-                retailer='✅' if roles["retailer"]["enabled"] else '❎',
-                factory='✅' if roles["factory"]["enabled"] else '❎',
-                total_cost=sum([roles[r]["cost"] for r in roles])
-            ))
+                st.markdown(PLAYERS.substitute(
+                    player=p,
+                    shop='✅' if roles["shop"]["enabled"] else '❎',
+                    retailer='✅' if roles["retailer"]["enabled"] else '❎',
+                    factory='✅' if roles["factory"]["enabled"] else '❎',
+                    total_cost=sum([roles[r]["cost"] for r in roles])
+                ))
 
-            st.write(roles)
+                st.write(roles)
