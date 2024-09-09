@@ -8,6 +8,7 @@ from beer_game.player_repo import PlayerRepo
 
 st.set_page_config(page_title="Beer Player", page_icon="📈")
 
+st.session_state.timer = 30
 
 @st.fragment(run_every="1s")
 def place_order_timer():

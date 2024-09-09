@@ -104,7 +104,7 @@ if st.session_state.check_state("game"):
     st.text(f"{n_players} players")
 
     cols = st.tabs(list(players.keys()) or ["No Player"])
-    if n_players:
+    if n_players > 0:
         players = [(p, roles) for p, roles in players.items()]
 
         for idx, col in enumerate(cols):
