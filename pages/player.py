@@ -8,11 +8,11 @@ from beer_game.player_repo import PlayerRepo
 
 st.set_page_config(page_title="Beer Player", page_icon="📈")
 
-st.session_state.timer = 30
-
 @st.fragment(run_every="1s")
 def place_order_timer():
-    if st.session_state.timer > 0:
+    if "timer" not in st.session_state:
+        st.session_state.locked = False
+    elif st.session_state.timer > 0:
         st.toast(f"{st.session_state.timer}", icon="⚠️")
 
         st.session_state.timer -= 1
