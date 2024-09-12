@@ -100,3 +100,27 @@ class AdapterTestCase(unittest.TestCase):
         self.adapter.saveDelivery(10, 1, *identifier)
         order1 = self.adapter.getDelivery(identifier, 1)
         self.assertEqual(order1, 10)
+
+    def test_get_order_by_week(self):
+        identifier = ("game1", "player1", "shop")
+
+        self.adapter.saveOrder(10, 1, *identifier)
+        self.adapter.saveOrder(30, 3, *identifier)
+
+        identifier = ("game1", "player2", "retailer")
+        self.adapter.saveDelivery(10, 1, *identifier)
+        self.adapter.saveDelivery(20, 2, *identifier)
+
+        orders = self.adapter.getOrderByWeek("game1", 1, 3)
+
+        self.assertEqual(len(orders), 3)
+        self.assertEqual(orders[1], {
+            "player1": {"shop": {"buy": 10}},
+            "player2": {"retailer": {"delivery": 10}}
+        })
+        self.assertEqual(orders[2], {
+            "player2": {"retailer": {"delivery": 20}}
+        })
+        self.assertEqual(orders[3], {
+            "player1": {"shop": {"buy": 30}},
+        })

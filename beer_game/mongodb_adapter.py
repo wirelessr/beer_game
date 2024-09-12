@@ -121,3 +121,31 @@ class MongoDB:
     @retry(retries=3, delay=0.1)
     def incrWeek(self, game):
         return self.game.update_one({"name": game}, {"$inc": {"week": 1}})
+
+    def getOrderByWeek(self, game, start_week, end_week):
+        end_week = end_week or start_week
+        ret = {} # {week: {player: {role: {buy, delivery}}}}
+
+        orders = self.order.find({
+            "game": game,
+            "week": {"$gte": start_week, "$lte": end_week}
+        })
+
+        for order in orders:
+            week = order["week"]
+            player = order["player"]
+            role = order["role"]
+            order_type = order["type"]
+
+            if week not in ret:
+                ret[week] = {}
+
+            if player not in ret[week]:
+                ret[week][player] = {}
+
+            if role not in ret[week][player]:
+                ret[week][player][role] = {}
+
+            ret[week][player][role][order_type] = order["qty"]
+
+        return ret
