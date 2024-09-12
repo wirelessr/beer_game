@@ -63,6 +63,7 @@ with st.sidebar:
             st.session_state.game.newGame()
 
     if st.button("End Game", disabled=("game" not in st.session_state)):
+        st.session_state.game.endGame()
         del st.session_state["game"]
 
 
@@ -112,9 +113,9 @@ if st.session_state.check_state("game"):
                 p, roles = players[idx]
 
                 PLAYERS = Template('''- $player
-    - Shop: $shop
-    - Retailer: $retailer
-    - Factory: $factory
+    - Shop: $shop $shop_purchased
+    - Retailer: $retailer $retailer_purchased
+    - Factory: $factory $factory_purchased
     - Cost: $total_cost
 ''')
 
@@ -123,6 +124,11 @@ if st.session_state.check_state("game"):
                     shop='✅' if roles["shop"]["enabled"] else '❎',
                     retailer='✅' if roles["retailer"]["enabled"] else '❎',
                     factory='✅' if roles["factory"]["enabled"] else '❎',
+                    shop_purchased='🔒' if roles["shop"]["purchased"] else '💸',
+                    retailer_purchased='🔒' \
+                          if roles["retailer"]["purchased"] else '💸',
+                    factory_purchased='🔒' \
+                        if roles["factory"]["purchased"] else '💸',
                     total_cost=sum([roles[r]["cost"] for r in roles])
                 ))
 

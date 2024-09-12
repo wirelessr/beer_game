@@ -75,7 +75,7 @@ class DictDB:
         self.data[game] = GAME_TEMPLATE()
 
     def removeGame(self, game):
-        del self.data[game]
+        self.data.pop(game, None)
         for table in ["stat", "order"]:
             for k in list(self.data[table].keys()):
                 ((g, _, _), _) = k

@@ -53,15 +53,17 @@ class GameRepo:
         )
         ret = {}
 
-        for p, roles in orders[week].items():
+        for p, roles in orders.get(week, {}).items():
             ret[p] = {}
             for role in roles:
                 prev_role = ROLES[ROLES.index(role) - 1]
                 ret[p][prev_role] = (roles[role].get("buy") is not None)
 
-        for p, roles in orders[week + CONFIG.delivery_weeks].items():
+        for p, roles in orders.get(week + CONFIG.delivery_weeks, {}).items():
             ret.setdefault(p, {})
-            ret[p]["factory"] = (roles["factory"].get("delivery") is not None)
+            ret[p]["factory"] = (
+                roles.get("factory", {}).get("delivery") is not None
+            )
 
         return ret
 
@@ -76,6 +78,8 @@ class GameRepo:
             for role in roles:
                 player = PlayerRepo(self.game, p, role, self.db)
                 ret[p][role] = player.reloadStat() | {"enabled": roles[role]}
-                ret[p][role] |= {"purchased": orders[p].get(role, False)}
+                ret[p][role] |= {
+                    "purchased": orders.get(p, {}).get(role, False)
+                }
 
         return ret
