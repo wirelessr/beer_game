@@ -6,8 +6,10 @@ from beer_game.player_repo import PlayerRepo
 
 
 class IntegrationTestCase(unittest.TestCase):
+    DB = DictDB()
+
     def setUp(self):
-        self.db = DictDB()
+        self.db = self.DB
         self.game = GameRepo("Game 1", self.db)
         self.shop = PlayerRepo("Game 1", "Player 1", "shop", self.db)
         self.retailer = PlayerRepo("Game 1", "Player 1", "retailer", self.db)
@@ -15,6 +17,9 @@ class IntegrationTestCase(unittest.TestCase):
         self.shop.register()
         self.retailer.register()
         self.factory.register()
+
+    def tearDown(self) -> None:
+        self.db.removeGame("Game 1")
 
     def test_register(self):
         self.game.newGame()

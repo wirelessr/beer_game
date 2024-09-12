@@ -11,6 +11,9 @@ class GameRepo:
     def newGame(self):
         self.db.createGame(self.game)
 
+    def endGame(self):
+        self.db.removeGame(self.game)
+
     def getDashboard(self):
         return self.db.getDashboard(self.game)
 
@@ -57,6 +60,7 @@ class GameRepo:
                 ret[p][prev_role] = (roles[role].get("buy") is not None)
 
         for p, roles in orders[week + CONFIG.delivery_weeks].items():
+            ret.setdefault(p, {})
             ret[p]["factory"] = (roles["factory"].get("delivery") is not None)
 
         return ret

@@ -110,13 +110,20 @@ class MongoDB:
         return self._fam(self.game, {"name": game}, game_data)
 
     @retry(retries=3, delay=0.1)
+    def removeGame(self, game):
+        self.game.delete_one({"name": game})
+        self.order.delete_many({"game": game})
+        self.stat.delete_many({"game": game})
+
+    @retry(retries=3, delay=0.1)
     def addPlayer(self, game, player, role):
         return self.game.update_one(
             {"name": game}, {"$set": {f"players.{player}.{role}": True}}
         )
 
     def getPlayers(self, game):
-        return self.game.find_one({"name": game})["players"]
+        game = self.game.find_one({"name": game})
+        return game["players"] if game else None
 
     @retry(retries=3, delay=0.1)
     def incrWeek(self, game):

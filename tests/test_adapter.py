@@ -124,3 +124,29 @@ class AdapterTestCase(unittest.TestCase):
         self.assertEqual(orders[3], {
             "player1": {"shop": {"buy": 30}},
         })
+
+    def test_remove_game(self):
+        # order
+        identifier = ("game1", "player1", "shop")
+        self.adapter.saveOrder(10, 1, *identifier)
+        order1 = self.adapter.getOrder(identifier, 1)
+        self.assertEqual(order1, 10)
+        # stat
+        self.adapter.saveStat(identifier, 1, 1, 2, 3)
+        stat1 = self.adapter.getStat(identifier, 1)
+        self.assertEqual(stat1["inventory"], 1)
+        self.assertEqual(stat1["cost"], 2)
+        self.assertEqual(stat1["out_of_stock"], 3)
+        # game
+        self.adapter.createGame("game1")
+        self.adapter.addPlayer(*identifier)
+        players = self.adapter.getPlayers("game1")
+        self.assertEqual(len(players), 1)
+
+        self.adapter.removeGame("game1")
+
+        order1 = self.adapter.getOrder(identifier, 1)
+        self.assertEqual(order1, 0)
+        stat1 = self.adapter.getStat(identifier, 1)
+        players = self.adapter.getPlayers("game1")
+        self.assertIsNone(players)

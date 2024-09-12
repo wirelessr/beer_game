@@ -74,6 +74,14 @@ class DictDB:
     def createGame(self, game):
         self.data[game] = GAME_TEMPLATE()
 
+    def removeGame(self, game):
+        del self.data[game]
+        for table in ["stat", "order"]:
+            for k in list(self.data[table].keys()):
+                ((g, _, _), _) = k
+                if g == game:
+                    del self.data[table][k]
+
     def addPlayer(self, game, player, role):
         gameInfo = self.data.setdefault(game, GAME_TEMPLATE())
         gameInfo["players"].setdefault(
