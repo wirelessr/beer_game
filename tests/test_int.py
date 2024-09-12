@@ -201,6 +201,11 @@ class IntegrationTestCase(unittest.TestCase):
 
     def test_gm_reload_player(self):
         self.shop.purchase(1)
+        self.factory.purchase(1)
 
         r = self.game.reloadPlayerStat()
         self.assertEqual(r["Player 1"]["retailer"]["inventory"], 3)
+        self.assertEqual(r["Player 1"]["retailer"]["purchased"], False)
+
+        self.assertEqual(r["Player 1"]["shop"]["purchased"], True)
+        self.assertEqual(r["Player 1"]["factory"]["purchased"], True)

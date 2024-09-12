@@ -1,5 +1,6 @@
 from beer_game.adapter import PLAYER_TEMPLATE
-from beer_game.player_repo import PlayerRepo
+from beer_game.config import CONFIG
+from beer_game.player_repo import ROLES, PlayerRepo
 
 
 class GameRepo:
@@ -21,6 +22,16 @@ class GameRepo:
     def nextWeek(self):
         self.db.incrWeek(self.game)
 
+    # Get all players' online status
+    # Return format
+    # {
+    #   player_id: {
+    #       shop: <boolean>,
+    #       retailer: <boolean>,
+    #       factory: <boolean>,
+    #   },
+    #   ...
+    # }
     def retrievePlayer(self):
         ret = {}
 
@@ -30,14 +41,37 @@ class GameRepo:
 
         return ret
 
+    # factory找四週後的delivery
+    # 其他角色找下位當週buy
+    def getPurchasedRole(self):
+        week = self.db.getDashboard(self.game)["week"]
+        orders = self.db.getOrderByWeek(
+            self.game, week, week + CONFIG.delivery_weeks
+        )
+        ret = {}
+
+        for p, roles in orders[week].items():
+            ret[p] = {}
+            for role in roles:
+                prev_role = ROLES[ROLES.index(role) - 1]
+                ret[p][prev_role] = (roles[role].get("buy") is not None)
+
+        for p, roles in orders[week + CONFIG.delivery_weeks].items():
+            ret[p]["factory"] = (roles["factory"].get("delivery") is not None)
+
+        return ret
+
     def reloadPlayerStat(self):
         ret = {}
 
         players = self.retrievePlayer()
+        orders = self.getPurchasedRole()
+
         for p, roles in players.items():
             ret[p] = {}
             for role in roles:
                 player = PlayerRepo(self.game, p, role, self.db)
                 ret[p][role] = player.reloadStat() | {"enabled": roles[role]}
+                ret[p][role] |= {"purchased": orders[p].get(role, False)}
 
         return ret

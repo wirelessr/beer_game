@@ -88,3 +88,18 @@ class DictDB:
     def incrWeek(self, game):
         gameInfo = self.data.setdefault(game, GAME_TEMPLATE())
         gameInfo["week"] += 1
+
+    def getOrderByWeek(self, game, start_week, end_week):
+        end_week = end_week or start_week
+        ret = {} # {week: {player: {role: {buy, delivery}}}}
+        players = self.getPlayers(game)
+
+        for week in range(start_week, end_week + 1):
+            ret[week] = {}
+            for p, roles in players.items():
+                ret[week][p] = {}
+                for role in roles:
+                    pk = ((game, p, role), week)
+                    ret[week][p][role] = self.data["order"].get(pk, {})
+
+        return ret
