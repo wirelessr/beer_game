@@ -1,3 +1,4 @@
+from typing import Optional
 from beer_game.config import CONFIG
 
 
@@ -46,35 +47,35 @@ class DictDB:
         self.data["order"].setdefault(pk, ORDER_TEMPLATE())
         self.data["order"][pk]["delivery"] = delivery
 
-    def getStat(self, identifier, week):
+    def getStat(self, identifier: tuple, week: int) -> dict:
         pk = (identifier, week)
         return self.data["stat"].get(pk, STAT_TEMPLATE())
 
-    def getInventory(self, identifier, week):
+    def getInventory(self, identifier: tuple, week: int) -> int:
         return self.getStat(identifier, week)["inventory"]
 
-    def getCost(self, identifier, week):
+    def getCost(self, identifier: tuple, week: int) -> int:
         return self.getStat(identifier, week)["cost"]
 
-    def getOutOfStock(self, identifier, week):
+    def getOutOfStock(self, identifier: tuple, week: int) -> int:
         return self.getStat(identifier, week)["out_of_stock"]
 
-    def getOrder(self, identifier, week):
+    def getOrder(self, identifier: tuple, week: int) -> int:
         pk = (identifier, week)
         return self.data["order"].get(pk, ORDER_TEMPLATE())["buy"]
 
-    def getDashboard(self, game):
+    def getDashboard(self, game: str) -> dict:
         gameInfo = self.data.setdefault(game, GAME_TEMPLATE())
         return gameInfo
 
-    def getDelivery(self, identifier, week):
+    def getDelivery(self, identifier: tuple, week: int) -> int:
         pk = (identifier, week)
         return self.data["order"].get(pk, ORDER_TEMPLATE())["delivery"]
 
-    def createGame(self, game):
+    def createGame(self, game: str):
         self.data[game] = GAME_TEMPLATE()
 
-    def removeGame(self, game):
+    def removeGame(self, game: str):
         self.data.pop(game, None)
         for table in ["stat", "order"]:
             for k in list(self.data[table].keys()):
@@ -82,24 +83,39 @@ class DictDB:
                 if g == game:
                     del self.data[table][k]
 
-    def addPlayer(self, game, player, role):
+    def addPlayer(self, game: str, player: str, role: str):
         gameInfo = self.data.setdefault(game, GAME_TEMPLATE())
         gameInfo["players"].setdefault(
             player, {"shop": False, "retailer": False, "factory": False}
         )
         gameInfo["players"][player][role] = True
 
-    def getPlayers(self, game):
+    def getPlayers(self, game: str) -> dict:
         gameInfo = self.data.setdefault(game, GAME_TEMPLATE())
         return gameInfo["players"]
 
-    def incrWeek(self, game):
+    def incrWeek(self, game: str):
         gameInfo = self.data.setdefault(game, GAME_TEMPLATE())
         gameInfo["week"] += 1
 
-    def getOrderByWeek(self, game, start_week, end_week):
+    """
+    Returns format
+    {
+        week: {
+            player_id: {
+                role: {
+                    order_type: order_quantity
+                }
+            }
+        }
+    }
+    """
+
+    def getOrderByWeek(
+        self, game: str, start_week: int, end_week: Optional[int] = None
+    ) -> dict[int, dict[str, dict[str, dict[str, int]]]]:
         end_week = end_week or start_week
-        ret = {} # {week: {player: {role: {buy, delivery}}}}
+        ret: dict[int, dict[str, dict[str, dict[str, int]]]] = {}
         players = self.getPlayers(game)
 
         for week in range(start_week, end_week + 1):

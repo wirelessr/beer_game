@@ -114,16 +114,22 @@ class AdapterTestCase(unittest.TestCase):
         orders = self.adapter.getOrderByWeek("game1", 1, 3)
 
         self.assertEqual(len(orders), 3)
-        self.assertEqual(orders[1], {
-            "player1": {"shop": {"buy": 10}},
-            "player2": {"retailer": {"delivery": 10}}
-        })
-        self.assertEqual(orders[2], {
-            "player2": {"retailer": {"delivery": 20}}
-        })
-        self.assertEqual(orders[3], {
-            "player1": {"shop": {"buy": 30}},
-        })
+        self.assertEqual(
+            orders[1],
+            {
+                "player1": {"shop": {"buy": 10}},
+                "player2": {"retailer": {"delivery": 10}},
+            },
+        )
+        self.assertEqual(
+            orders[2], {"player2": {"retailer": {"delivery": 20}}}
+        )
+        self.assertEqual(
+            orders[3],
+            {
+                "player1": {"shop": {"buy": 30}},
+            },
+        )
 
     def test_remove_game(self):
         # order

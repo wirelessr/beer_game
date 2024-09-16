@@ -131,12 +131,11 @@ class MongoDB:
 
     def getOrderByWeek(self, game, start_week, end_week):
         end_week = end_week or start_week
-        ret = {} # {week: {player: {role: {buy, delivery}}}}
+        ret = {}  # {week: {player: {role: {buy, delivery}}}}
 
-        orders = self.order.find({
-            "game": game,
-            "week": {"$gte": start_week, "$lte": end_week}
-        })
+        orders = self.order.find(
+            {"game": game, "week": {"$gte": start_week, "$lte": end_week}}
+        )
 
         for order in orders:
             week = order["week"]

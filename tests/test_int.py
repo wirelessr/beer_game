@@ -43,7 +43,6 @@ class IntegrationTestCase(unittest.TestCase):
         invalid_role = PlayerRepo("Game 1", "Player 1", "invalid", self.db)
         self.assertRaises(ValueError, invalid_role.register)
 
-
     def test_game_start(self):
         w0 = self.shop.reloadStat()
         self.assertEqual(w0["week"], 0)
